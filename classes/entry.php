@@ -29,15 +29,20 @@ class Entry {
     }
 
     public function setByParams( $id, $date, $author, $title, $excerpt, $content ) {
-        $this->id = $id;
-        $this->author = $author;
-        $this->date = $date;
-        $this->title = $title;
-        $this->excerpt = $excerpt;
-        $this->content = $content;
+        if (strlen($author) == 0) {
+            $this->id = -1;
+        } else {
+            $this->id = $id;
+            $this->author = $author;
+            $this->date = $date;
+            $this->title = $title;
+            $this->excerpt = $excerpt;
+            $this->content = $content;
+        }
     }
 
     public function setByRow( $row ) {
+        //print_r($row);
         $this->setByParams (
             $row['entry_id'],
             $row['entry_date'],
@@ -85,7 +90,10 @@ class Entry {
         $this->error = $this->dbh->errorInfo();
         //print_r($this->error);
 
-        $this->id = $stmt->fetch(PDO::FETCH_ASSOC)['entry_id'];
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        //print_r($row);
+
+        $this->id = $row['entry_id'];
 
         return $result;
     }
